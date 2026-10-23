@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#dff2ff">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./src/style.css">
+  <title>Project workspace — Schemafy</title>
+</head>
+<body class="studio-page">
+  <div class="studio-shell">
+    <aside class="studio-sidebar">
+      <a class="brand" href="./index.html"><span class="brand-mark">S</span> schemafy <span class="beta-tag">STUDIO</span></a>
+      <div class="side-section-label">WORKSPACE</div>
+      <button class="side-project active" id="project-name-button"><span class="side-icon">▦</span><span id="sidebar-project-name">My Project</span><span class="side-chevron">⌄</span></button>
+      <div class="side-section-label side-label-row">SCHEMAS <button class="tiny-add" id="add-schema-side" title="Add schema">+</button></div>
+      <nav id="schema-nav" class="schema-nav"></nav>
+      <div class="sidebar-bottom"><div class="side-tip"><b>✳ Built for builders</b><p>Design your data model, then use generated commands in your own projects.</p></div><div class="sidebar-user"><span class="user-avatar" id="user-avatar">U</span><span class="user-email" id="user-email">you@example.com</span><button id="logout" class="logout-button" title="Sign out">↗</button></div></div>
+    </aside>
+    <main class="studio-main">
+      <header class="studio-topbar"><div class="breadcrumbs"><a href="./index.html">Schemafy</a><span>/</span><b id="breadcrumb">Overview</b></div><div class="top-actions"><span class="local-status"><i></i> LOCAL WORKSPACE</span><button class="button button-light button-small" id="rename-project">Project settings</button><button class="button button-light button-small" id="download-import-top" onclick="document.getElementById('download-import')?.click()">↓ Import file</button></div></header>
+      <section class="studio-content" id="studio-content"></section>
+    </main>
+  </div>
+  <div id="modal-root"></div><div id="toast-root" class="toast-root" aria-live="polite"></div>
+  <script src="./src/schemafy.js"></script>
+  <script src="./src/app.js"></script>
+</body>
+</html>
