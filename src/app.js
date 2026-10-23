@@ -6,7 +6,7 @@
  const uid=()=>crypto.randomUUID(),identifier=v=>/^[A-Za-z_][A-Za-z0-9_]*$/.test(v);
  const slug=v=>v.toLowerCase().trim().replace(/[^a-z0-9_]+/g,'_').replace(/^_+|_+$/g,'')||'new_table';
  let state=loadState();
- const pageMatch=location.pathname.match(/proj_(\\d+)\\.html$/i),projectSlot=pageMatch?Number(pageMatch[1]):0;
+ const pageMatch=location.pathname.match(/proj_(\d+)\.html$/i),projectSlot=pageMatch?Number(pageMatch[1]):0;
  if(projectSlot&&(!state.projects[projectSlot-1])){location.replace('./app.html');return}
  let activeProject=projectSlot?state.projects[projectSlot-1]:state.projects[0],activeSchema=activeProject.schemas[0]||null,activeTable=null,view='overview',selectedTab='commands';
  function freshProject(name='My Project'){return{id:uid(),name,website:'',createdAt:new Date().toISOString(),schemas:[]}}
