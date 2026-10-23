@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#dff2ff">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./src/style.css">
+  <title>Sign in — Schemafy</title>
+</head>
+<body class="auth-page">
+  <a class="brand auth-brand" href="./index.html"><span class="brand-mark">S</span> schemafy</a>
+  <main class="auth-layout">
+    <section class="auth-story"><span class="eyebrow">DATABASE STUDIO / 001</span><h1>Your ideas deserve<br>a <span>proper structure.</span></h1><p>Build your data model visually. Keep your tables organized. Grab ready-to-use commands when you're ready to code.</p><div class="auth-art-card"><div class="auth-art-top"><span>● ● ●</span><span>game_data / players</span></div><div class="auth-art-lines"><span style="width:84%"></span><span style="width:60%"></span><span style="width:72%"></span><span style="width:47%"></span></div><div class="auth-art-tag">TABLES THAT MAKE SENSE.</div></div></section>
+    <section class="auth-form-wrap"><form id="auth-form" class="auth-form">
+      <span class="eyebrow" id="form-eyebrow">WELCOME BACK</span>
+      <h2 id="form-title">Sign in to Schemafy</h2><p class="muted" id="form-subtitle">Pick up where your ideas left off.</p>
+      <label id="name-label" hidden>Display name<input name="displayName" maxlength="50" autocomplete="nickname" placeholder="What should we call you?"></label>
+      <label>Email address<input name="email" type="email" required autocomplete="email" placeholder="you@example.com"></label>
+      <label>Password<input name="password" type="password" required minlength="4" autocomplete="current-password" placeholder="Your password"></label>
+      <button class="button button-dark button-full" type="submit" id="submit-button">Sign in <span>→</span></button>
+      <p id="auth-error" class="form-message" role="status" hidden></p>
+      <p class="auth-switch"><span id="switch-text">New to Schemafy?</span> <button class="text-button" type="button" id="switch-mode">Create an account</button></p>
+      <p class="auth-disclaimer">Prototype mode: accounts and workspace data are stored in this browser only. This is not secure server-side authentication or cloud storage yet.</p>
+    </form></section>
+  </main>
+  <script src="./src/auth.js"></script>
+</body>
+</html>
