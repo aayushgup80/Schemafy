@@ -1,34 +1,27 @@
 # Schemafy
 
-**Shape your data. Power your app.**
+Schemafy is a visual database studio prototype built with **plain HTML, CSS and JavaScript**. It does not require React, Node.js, npm, Vite, or a Supabase connection.
 
-Schemafy is a visual database studio built with **plain HTML, CSS and JavaScript**. It connects directly to Supabase and lets you create projects, schemas, tables, typed columns and records.
+## Run it
 
-## No Node.js or build tools
+1. Download/clone this repository.
+2. Open `index.html` with VS Code Live Server or host the folder as a static site.
+3. Select **Create free account**. Create a local account and start using the studio.
 
-There is no React, Node.js, npm, Vite or bundler requirement.
+## What works in this prototype
 
-1. Open the repository in VS Code.
-2. Install/use the **Live Server** extension and choose **Open with Live Server** on `index.html`. You can also host the files on any static web host.
-3. Enter your Supabase project URL and public publishable/anon key in Schemafy's connection screen.
-4. Sign up or sign in and start creating your data model.
+- Dedicated landing page, `login.html`, and `app.html`
+- Local sign-up and sign-in screen
+- Projects, schemas, tables, columns and records
+- Column types: text, number, boolean, JSON and date
+- Required/unique column validation for newly added records
+- Generated JavaScript command examples for select, insert, update, delete and schema info
+- Copy command button
+- Responsive light-blue and black design with transitions
+- Workspace data stored in browser `localStorage`, separated by local account
 
-The Supabase JavaScript client is loaded in the browser from jsDelivr. Connection details are stored in this browser's local storage. Use only a publishable/anon key; never put a service-role or secret key in browser code.
+## Important prototype limitation
 
-## Features
+There is **no hosted database or real server authentication yet**. Accounts and workspace data live only in the current browser profile and can be cleared with browser storage. This is for UI/prototype development, not production credentials or multi-device syncing. The command panel generates examples; it is not a live external database API or SDK yet.
 
-- Email/password sign-up and sign-in
-- Up to 10 projects per account
-- Project website URL metadata
-- Visual schemas, tables and typed columns
-- JSON-backed rows with add/delete actions
-- Row-level security ownership policies on Schemafy metadata and records
-- Responsive light-blue and black theme
-
-The JavaScript SDK generator and secure runtime API for external apps are **not implemented yet**. The current row editor is for authenticated Schemafy users.
-
-## Architecture
-
-Schemas, tables and columns are stored as metadata. Record values are stored in `sf_rows.data` as JSONB, with a generated UUID per row. This lets the studio add user-defined fields without creating a new physical PostgreSQL table for every user's table definition.
-
-Before a generated SDK can safely serve external game clients, Schemafy needs a server-side API that authenticates project-scoped credentials, validates table/column definitions and enforces quotas.
+A production version will need a backend database, secure authentication, project-scoped credentials, and a runtime API before other apps can execute commands against hosted tables.
