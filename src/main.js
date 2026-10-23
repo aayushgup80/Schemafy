@@ -1,16 +1,25 @@
-import { createClient } from '@supabase/supabase-js';
-import './style.css';
-
-const URL = import.meta.env.VITE_SUPABASE_URL;
-const KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-const configured = URL && KEY && !URL.includes('your-project') && !KEY.includes('your-supabase');
+const SUPABASE_URL_KEY = 'schemafy.supabase.url';
+const SUPABASE_PUBLIC_KEY = 'schemafy.supabase.publishableKey';
+const getConfig = () => ({
+ URL: localStorage.getItem(SUPABASE_URL_KEY) || 'https://acqecewpnuqapxgicsgr.supabase.co',
+ KEY: localStorage.getItem(SUPABASE_PUBLIC_KEY) || ''
+});
 const app = document.querySelector('#app');
 let db, session, projects = [], project, schemas = [], schema, tables = [], table, columns = [], rows = [];
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const slug = v => v.toLowerCase().trim().replace(/[^a-z0-9_]+/g,'-').replace(/^-|-$/g,'').slice(0,50) || 'project';
 function toast(msg, type='info') { const el=document.querySelector('#notice'); if(!el)return; el.textContent=msg;el.className='notice '+type;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,4500); }
 function setup() {
- app.innerHTML='<main class="setup"><div class="mark">S<span>.</span></div><p class="eyebrow">DATABASE STUDIO</p><h1>Shape your data.<br><span>Power your app.</span></h1><p class="muted">Schemafy gives developers a visual place to design schemas, tables, columns and records.</p><section class="panel"><i class="dot"></i><h2>Connect your Supabase project</h2><p class="muted">Your database is ready. Add its public connection settings locally to launch the studio.</p><p class="mono">.env.local</p><pre>VITE_SUPABASE_URL=https://acqecewpnuqapxgicsgr.supabase.co\nVITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key</pre><p class="muted small">Get the publishable key from Supabase → Project Settings → API Keys. Never use a service-role or secret key in browser code.</p><a class="btn primary full" href="https://supabase.com/dashboard/project/acqecewpnuqapxgicsgr/settings/api-keys" target="_blank" rel="noreferrer">Open Schemafy API settings ↗</a></section><p class="muted tiny">Copy .env.example to .env.local, add your values, then run npm run dev.</p></main>';
+ const config=getConfig();
+ app.innerHTML='<main class="setup"><div class="mark">S<span>.</span></div><p class="eyebrow">DATABASE STUDIO</p><h1>Shape your data.<br><span>Power your app.</span></h1><p class="muted">A lightweight database studio built with plain HTML, CSS and JavaScript. No Node.js, React or build tools.</p><section class="panel"><i class="dot"></i><h2>Connect your Supabase project</h2><p class="muted">Enter your project URL and publishable key once. They stay in this browser only.</p><form id="connectform"><label>Supabase project URL</label><input name="url" type="url" required value="'+esc(config.URL)+'" placeholder="https://your-project.supabase.co"><label>Publishable key</label><input name="key" required value="'+esc(config.KEY)+'" placeholder="sb_publishable_…" autocomplete="off"><button class="btn primary full" type="submit">Connect to Schemafy →</button></form><p class="muted small">Find these in Supabase → Project Settings → API Keys. Use only the public publishable/anon key. Never enter a service-role or secret key here.</p><a class="btn secondary full" href="https://supabase.com/dashboard/project/acqecewpnuqapxgicsgr/settings/api-keys" target="_blank" rel="noreferrer">Open Supabase API settings ↗</a><div id="notice" class="notice" hidden></div></section><p class="muted tiny">Run with VS Code Live Server or host as a static website. No npm install or build step.</p></main>';
+ document.querySelector('#connectform').onsubmit=async e=>{
+  e.preventDefault();
+  const f=new FormData(e.target), url=String(f.get('url')).trim().replace(/\\/$/,''), key=String(f.get('key')).trim();
+  if(!url.startsWith('https://')) return toast('Use the HTTPS URL shown in your Supabase project settings.','error');
+  if(/service_role|secret/i.test(key)) return toast('That looks like a secret key. Use the public publishable/anon key instead.','error');
+  localStorage.setItem(SUPABASE_URL_KEY,url);localStorage.setItem(SUPABASE_PUBLIC_KEY,key);
+  await start();
+ };
 }
 function auth(mode='login') {
  const signup=mode==='signup';
@@ -49,5 +58,5 @@ function renderTable(){crumb(project.name+' / '+table.name);const heads=columns.
 function columnDialog(){modal('Add a column','Column IDs are generated automatically.','<label>Column name</label><input name="name" required pattern="[A-Za-z_][A-Za-z0-9_]*" maxlength="63" placeholder="player_level"><label>Data type</label><select name="type"><option value="text">Text</option><option value="number">Number</option><option value="boolean">Boolean</option><option value="json">JSON / object</option><option value="date">Date</option></select><p class="hint">Every row receives its own UUID automatically.</p>',async f=>{const r=await db.from('sf_columns').insert({table_id:table.id,name:String(f.get('name')).trim(),data_type:String(f.get('type')),ordinal:columns.length});if(r.error)throw r.error;await openTable(table.id);toast('Column added.','success');});}
 function rowDialog(){if(!columns.length)return toast('Add at least one column first.','error');const fields=columns.map(c=>c.data_type==='boolean'?'<label class="check"><input type="checkbox" name="f:'+esc(c.name)+'"> '+esc(c.name)+' <small>boolean</small></label>':'<label>'+esc(c.name)+' <small>'+esc(c.data_type)+'</small></label><input name="f:'+esc(c.name)+'" '+(c.data_type==='number'?'type="number" step="any"':c.data_type==='date'?'type="date"':'')+' placeholder="Enter '+esc(c.name)+'">').join('');modal('Add a row','Enter values for the columns in this table.',fields,async f=>{const data={};for(const c of columns){const raw=f.get('f:'+c.name);if(c.data_type==='boolean')data[c.name]=raw==='on';else if(raw===null||String(raw).trim()==='')data[c.name]=null;else if(c.data_type==='number')data[c.name]=Number(raw);else if(c.data_type==='json'){try{data[c.name]=JSON.parse(raw);}catch{throw Error('Column '+c.name+' must contain valid JSON.');}}else data[c.name]=String(raw);}const r=await db.from('sf_rows').insert({table_id:table.id,data});if(r.error)throw r.error;await openTable(table.id);toast('Row added.','success');});}
 async function deleteRow(id){if(!confirm('Delete this row permanently?'))return;const r=await db.from('sf_rows').delete().eq('id',id);if(r.error)return toast(r.error.message,'error');await openTable(table.id);toast('Row deleted.','success');}
-async function start(){if(!configured)return setup();db=createClient(URL,KEY);const r=await db.auth.getSession();session=r.data.session;db.auth.onAuthStateChange((_e,s)=>{session=s;if(!s){projects=[];auth();}});if(session)await loadProjects();else auth();}
+async function start(){if(!getConfig().KEY)return setup();const config=getConfig();if(!config.KEY){setup();return;}if(!window.supabase||!window.supabase.createClient){app.innerHTML='<main class="setup"><h1>Supabase client could not load.</h1><p class="muted">Check your internet connection, then refresh this page.</p></main>';return;}db=window.supabase.createClient(config.URL,config.KEY);const r=await db.auth.getSession();session=r.data.session;db.auth.onAuthStateChange((_e,s)=>{session=s;if(!s){projects=[];auth();}});if(session)await loadProjects();else auth();}
 start();
