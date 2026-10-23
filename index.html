@@ -3,15 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#eaf6ff">
-  <meta name="description" content="Schemafy — shape your data, power your app.">
+  <meta name="theme-color" content="#dff2ff">
+  <meta name="description" content="Schemafy — your own visual database studio.">
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./src/style.css">
-  <title>Schemafy — Database Studio</title>
+  <title>Schemafy — Your database studio</title>
 </head>
 <body>
-  <div id="app"></div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="./src/main.js"></script>
+  <main class="landing">
+    <a class="brand" href="./index.html"><span class="brand-mark">S</span> schemafy</a>
+    <div class="landing-copy">
+      <span class="eyebrow">YOUR DATABASE. YOUR RULES.</span>
+      <h1>Shape your data.<br><span>Build your world.</span></h1>
+      <p>Make projects, schemas, tables, columns and records. Generate commands and copy them into your own code — all in a clean, visual studio.</p>
+      <div class="landing-actions"><a class="button button-dark" href="./login.html">Open Schemafy <span>↗</span></a><a class="button button-light" href="./login.html?mode=signup">Create free account</a></div>
+      <div class="landing-points"><span>✓ No Node.js</span><span>✓ No React</span><span>✓ Runs as a static site</span></div>
+    </div>
+    <div class="landing-preview" aria-label="Preview of the Schemafy database studio">
+      <div class="preview-top"><span class="preview-dots">● ● ●</span><span>SCHEMAFY / DATABASE STUDIO</span><span class="preview-live">LOCAL</span></div>
+      <div class="preview-layout"><aside><b>WORKSPACE</b><p class="preview-active">▦　 My Game</p><p>▰　 game_data</p><p class="preview-indent">▤　 players</p><p class="preview-indent">▤　 inventory</p><p>▰　 analytics</p></aside><section><div class="preview-title">players <span>+ Add row</span></div><div class="preview-table"><b>id</b><b>username</b><b>level</b><b>coins</b><span>row_001</span><span>PixelKnight</span><span>12</span><span>450</span><span>row_002</span><span>NovaFox</span><span>8</span><span>120</span></div><div class="preview-code"><span>▣ COMMAND PREVIEW</span><code>db.table("players").select()</code></div></section></div>
+    </div>
+    <footer>SCHEMAFY · BUILT FOR BUILDERS</footer>
+  </main>
 </body>
 </html>
